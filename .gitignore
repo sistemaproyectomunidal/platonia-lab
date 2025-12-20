@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Ignore built static assets committed accidentally
+assets
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
