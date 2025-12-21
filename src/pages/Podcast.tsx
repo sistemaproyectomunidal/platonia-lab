@@ -1,10 +1,21 @@
+import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import EpisodeCard from '@/components/EpisodeCard';
+import AudioPlayer from '@/components/AudioPlayer';
+import TranscriptViewer from '@/components/TranscriptViewer';
 import episodesData from '@/data/episodes.json';
-import { Headphones, Rss } from 'lucide-react';
+import { getTranscript } from '@/data/transcripts';
+import { Headphones, Rss, X } from 'lucide-react';
 
 const Podcast = () => {
+  const [selectedEpisode, setSelectedEpisode] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  
   const publishedEpisodes = episodesData.episodes.filter(e => e.state === 'published');
+  const selectedEpisodeData = selectedEpisode 
+    ? episodesData.episodes.find(e => e.id === selectedEpisode)
+    : null;
+  const transcript = selectedEpisode ? getTranscript(selectedEpisode) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -13,7 +24,6 @@ const Podcast = () => {
       <main className="pt-16">
         {/* Hero */}
         <section className="py-16 border-b border-border relative overflow-hidden">
-          {/* Background gradient */}
           <div 
             className="absolute inset-0 opacity-20"
             style={{
@@ -54,6 +64,36 @@ const Podcast = () => {
           </div>
         </section>
 
+        {/* Player Section */}
+        {selectedEpisodeData && transcript && (
+          <section className="py-8 bg-card border-b border-border">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-system text-xs text-primary uppercase">Reproduciendo</span>
+                <button 
+                  onClick={() => setSelectedEpisode(null)}
+                  className="p-1 hover:bg-secondary rounded transition-colors"
+                >
+                  <X className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </div>
+              <div className="grid lg:grid-cols-2 gap-6">
+                <AudioPlayer
+                  title={selectedEpisodeData.title}
+                  episodeNumber={selectedEpisodeData.id.replace('ep', '')}
+                  duration={selectedEpisodeData.duration}
+                  onTimeUpdate={setCurrentTime}
+                />
+                <TranscriptViewer
+                  title={transcript.title}
+                  segments={transcript.segments}
+                  currentTime={currentTime}
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Episodes List */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-6">
@@ -62,58 +102,9 @@ const Podcast = () => {
                 <EpisodeCard 
                   key={episode.id} 
                   episode={episode as any}
-                  onPlay={() => console.log('Play:', episode.id)}
+                  onPlay={() => setSelectedEpisode(episode.id)}
                 />
               ))}
-            </div>
-
-            {publishedEpisodes.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-muted-foreground italic">
-                  Próximamente: episodios que cuestionarán tus certezas.
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* About the format */}
-        <section className="py-16 bg-card border-t border-border">
-          <div className="max-w-4xl mx-auto px-6">
-            <h2 className="font-philosophy text-3xl text-foreground text-center">
-              Formato del Podcast
-            </h2>
-            
-            <div className="mt-12 grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4">
-                  <span className="font-philosophy text-lg text-primary">1</span>
-                </div>
-                <h3 className="font-philosophy text-lg text-foreground">Tensión</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Identificamos un nodo del mapa en estado de activación.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4">
-                  <span className="font-philosophy text-lg text-primary">2</span>
-                </div>
-                <h3 className="font-philosophy text-lg text-foreground">Dialéctica</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Exploramos las contradicciones sin pretender resolverlas.
-                </p>
-              </div>
-              
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/30 mb-4">
-                  <span className="font-philosophy text-lg text-primary">3</span>
-                </div>
-                <h3 className="font-philosophy text-lg text-foreground">Pregunta</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Terminamos con una pregunta socrática más incómoda que el inicio.
-                </p>
-              </div>
             </div>
           </div>
         </section>
