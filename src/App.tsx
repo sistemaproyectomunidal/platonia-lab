@@ -21,7 +21,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/platonia-lab">
         <NavigationProvider>
           <ScrollAndFocus />
           <Routes>
