@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import Mapa from "./pages/Mapa";
 import Podcast from "./pages/Podcast";
 import Laboratorio from "./pages/Laboratorio";
+import Corpus from "./pages/Corpus";
+import CorpusDetail from "./pages/CorpusDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/mapa" element={<Mapa />} />
           <Route path="/podcast" element={<Podcast />} />
           <Route path="/laboratorio" element={<Laboratorio />} />
+          <Route path="/corpus" element={<Corpus />} />
+          <Route path="/corpus/:slug" element={<CorpusDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </HashRouter>

@@ -8,6 +8,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', label: 'Manifiesto', layer: 'caverna' },
     { path: '/mapa', label: 'Mapa Lagrange', layer: 'dialectica' },
+    { path: '/corpus', label: 'Corpus', layer: 'dialectica' },
     { path: '/podcast', label: 'Podcast', layer: 'caverna' },
     { path: '/laboratorio', label: 'Laboratorio', layer: 'academia' },
   ];
