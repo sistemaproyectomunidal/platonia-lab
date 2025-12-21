@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
 import nodesData from '@/data/nodes.json';
 import questionsData from '@/data/socraticQuestions.json';
+import { saveDemoResult } from '@/lib/backend';
 import { ArrowRight } from 'lucide-react';
+
+const GEMINI_ENDPOINT = import.meta.env.VITE_GEMINI_ENDPOINT || '';
 
 interface Result {
   axes: string[];
@@ -90,8 +93,52 @@ const LabDemo: React.FC = () => {
       ? `Propuesta: ${matchedQuestions.length} preguntas relevantes sobre los ejes ${Array.from(matchedAxes).join(', ') || 'general'}`
       : 'No se encontraron correspondencias claras.';
 
-    setResult({ axes: Array.from(matchedAxes), matchedNodes: Array.from(matchedNodes), questions: matchedQuestions, summary });
+    const resObj = { axes: Array.from(matchedAxes), matchedNodes: Array.from(matchedNodes), questions: matchedQuestions, summary };
+    setResult(resObj);
+
+    // Try saving the demo run to backend (Supabase) if configured
+    try {
+      const saved = await saveDemoResult({ prompt, summary: resObj.summary, axes: resObj.axes, matchedNodes: resObj.matchedNodes, questions: resObj.questions });
+      if (saved && saved.error) {
+        console.warn('Demo save failed:', saved.error);
+      } else if (saved && saved.id) {
+        console.info('Demo saved id:', saved.id);
+      }
+    } catch (e) {
+      console.warn('Demo save error', e);
+    }
     setRunning(false);
+  };
+
+  const generateWithGemini = async () => {
+    if (!GEMINI_ENDPOINT) {
+      alert('GEMINI endpoint not configured (set VITE_GEMINI_ENDPOINT)');
+      return;
+    }
+
+    setRunning(true);
+    try {
+      const res = await fetch(GEMINI_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const json = await res.json();
+      if (json?.ok && json.data) {
+        const aiText = typeof json.data === 'string' ? json.data : JSON.stringify(json.data);
+        setResult((r) => ({ ...(r as any), // append ai field
+          ai: aiText } as any));
+      } else if (json?.error) {
+        console.warn('Gemini function error:', json.error);
+        alert('Gemini function error: ' + json.error);
+      }
+    } catch (e) {
+      console.warn('Gemini call failed', e);
+      alert('Gemini call failed');
+    } finally {
+      setRunning(false);
+    }
   };
 
   return (

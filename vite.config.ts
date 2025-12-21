@@ -5,7 +5,8 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === "production" ? "/constellation-chronicle/" : "/",
+  // Use repository name as base for GitHub Pages production deploy
+  base: mode === "production" ? "/platonia-lab/" : "/",
   server: {
     host: "::",
     port: 8080,

@@ -98,6 +98,40 @@ Security notes
 Troubleshooting
 - If the Pages deployment fails, check the Actions tab for the workflow run logs. The build step prints Vite output and potential errors.
 
+Supabase backend (optional)
+- The project includes a Supabase client in `src/integrations/supabase` and a small helper `src/lib/backend.ts` to persist demo runs.
+- To enable persistence create a Supabase project and expose the following repository secrets (or local `.env` variables for development):
+	- `VITE_SUPABASE_URL` — your Supabase URL
+	- `VITE_SUPABASE_PUBLISHABLE_KEY` — the anon/public key
+- Example `.env` (development):
+```env
+VITE_SUPABASE_URL=https://xyzcompany.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+- Create a table `lab_demos` with at least the columns: `id` (serial pk), `prompt` (text), `summary` (text), `axes` (text[]), `matched_nodes` (text[]), `questions` (text/json).
+- When configured, the `LabDemo` component will attempt to save demo runs to that table.
+
+Serverless Gemini (LLM) function
+- An example Supabase Edge Function is provided at `supabase/functions/gemini`.
+- Deploy it with the Supabase CLI and set the secret `GEMINI_API_KEY` in the Supabase project (or the equivalent secret mechanism for your function host).
+- After deploying the function, set the frontend environment variable `VITE_GEMINI_ENDPOINT` to the function URL (for example `https://<project>.functions.supabase.co/gemini`).
+- `LabDemo` provides a client button to call this endpoint; the function holds the sensitive `GEMINI_API_KEY` server-side so it never appears in browser code.
+
+Example SQL for `lab_demos` table (Postgres):
+
+```sql
+create table if not exists lab_demos (
+	id serial primary key,
+	prompt text,
+	summary text,
+	axes text[],
+	matched_nodes text[],
+	questions jsonb,
+	created_at timestamptz default now()
+);
+```
+
+
 
 ## Can I connect a custom domain to my Lovable project?
 
