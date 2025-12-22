@@ -1,1 +1,10 @@
 project_id = "rrqukpxrrwhmfhaetaed"
+
+[functions.openai-chat]
+verify_jwt = false
+
+[functions.file-upload]
+verify_jwt = false
+
+[functions.gemini]
+verify_jwt = false

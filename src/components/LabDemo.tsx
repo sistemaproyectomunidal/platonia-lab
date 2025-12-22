@@ -1,23 +1,21 @@
 import { useMemo, useState } from 'react';
 import nodesData from '@/data/nodes.json';
 import questionsData from '@/data/socraticQuestions.json';
-import { saveDemoResult } from '@/lib/backend';
-import { ArrowRight } from 'lucide-react';
-
-const GEMINI_ENDPOINT = import.meta.env.VITE_GEMINI_ENDPOINT || '';
+import { saveDemoResult, generateWithOpenAI } from '@/lib/backend';
+import { Sparkles, Loader2 } from 'lucide-react';
 
 interface Result {
   axes: string[];
   matchedNodes: string[];
   questions: Array<{ id: string; text: string; axis: string }>;
   summary: string;
+  aiResponse?: string;
 }
 
 const extractBracketTokens = (text: string) => {
   const re = /\[([^\]]+)\]/g;
   const found: string[] = [];
   let m;
-  // eslint-disable-next-line no-cond-assign
   while ((m = re.exec(text)) !== null) {
     found.push(m[1].trim());
   }
@@ -27,6 +25,7 @@ const extractBracketTokens = (text: string) => {
 const LabDemo: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [running, setRunning] = useState(false);
+  const [generatingAI, setGeneratingAI] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
 
   const nodes = useMemo(() => nodesData.nodes, []);
@@ -36,13 +35,9 @@ const LabDemo: React.FC = () => {
     setRunning(true);
     setResult(null);
 
-    // Simulate a small processing delay
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 300));
 
-    // Extract explicit tokens like [miedo]
     const tokens = extractBracketTokens(prompt).map(t => t.toLowerCase());
-
-    // Match nodes by id or label
     const matchedNodes = new Set<string>();
     const matchedAxes = new Set<string>();
 
@@ -53,7 +48,6 @@ const LabDemo: React.FC = () => {
           matchedNodes.add(byId.id);
           matchedAxes.add(byId.axis);
         } else {
-          // try label match
           const byLabel = nodes.find((n: any) => n.label.toLowerCase() === tok);
           if (byLabel) {
             matchedNodes.add(byLabel.id);
@@ -63,7 +57,6 @@ const LabDemo: React.FC = () => {
       });
     }
 
-    // Fallback: keyword match against labels
     if (matchedNodes.size === 0 && prompt.trim().length > 0) {
       const lowered = prompt.toLowerCase();
       nodes.forEach((n: any) => {
@@ -74,7 +67,6 @@ const LabDemo: React.FC = () => {
       });
     }
 
-    // Find relevant questions that reference matched nodes or axes
     const matchedQuestions: Array<{ id: string; text: string; axis: string }> = [];
     if (matchedNodes.size) {
       questions.forEach((q: any) => {
@@ -84,7 +76,6 @@ const LabDemo: React.FC = () => {
       });
     }
 
-    // If still empty, pick top 2 general questions
     if (matchedQuestions.length === 0) {
       matchedQuestions.push(...questions.slice(0, 2).map((q: any) => ({ id: q.id, text: q.text, axis: q.axis })));
     }
@@ -93,51 +84,68 @@ const LabDemo: React.FC = () => {
       ? `Propuesta: ${matchedQuestions.length} preguntas relevantes sobre los ejes ${Array.from(matchedAxes).join(', ') || 'general'}`
       : 'No se encontraron correspondencias claras.';
 
-    const resObj = { axes: Array.from(matchedAxes), matchedNodes: Array.from(matchedNodes), questions: matchedQuestions, summary };
+    const resObj: Result = { 
+      axes: Array.from(matchedAxes), 
+      matchedNodes: Array.from(matchedNodes), 
+      questions: matchedQuestions, 
+      summary 
+    };
     setResult(resObj);
 
-    // Try saving the demo run to backend (Supabase) if configured
+    // Save to database
     try {
-      const saved = await saveDemoResult({ prompt, summary: resObj.summary, axes: resObj.axes, matchedNodes: resObj.matchedNodes, questions: resObj.questions });
-      if (saved && saved.error) {
+      const saved = await saveDemoResult({ 
+        prompt, 
+        summary: resObj.summary, 
+        axes: resObj.axes, 
+        matchedNodes: resObj.matchedNodes, 
+        questions: resObj.questions 
+      });
+      if (saved?.error) {
         console.warn('Demo save failed:', saved.error);
-      } else if (saved && saved.id) {
+      } else if (saved?.id) {
         console.info('Demo saved id:', saved.id);
       }
     } catch (e) {
       console.warn('Demo save error', e);
     }
+    
     setRunning(false);
   };
 
-  const generateWithGemini = async () => {
-    if (!GEMINI_ENDPOINT) {
-      alert('GEMINI endpoint not configured (set VITE_GEMINI_ENDPOINT)');
-      return;
-    }
+  const handleGenerateAI = async () => {
+    if (!result) return;
+    
+    setGeneratingAI(true);
+    
+    const context = `Ejes temáticos: ${result.axes.join(', ') || 'general'}. 
+Nodos relacionados: ${result.matchedNodes.join(', ') || 'ninguno específico'}.
+Preguntas sugeridas: ${result.questions.map(q => q.text).join('; ')}`;
 
-    setRunning(true);
     try {
-      const res = await fetch(GEMINI_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-
-      const json = await res.json();
-      if (json?.ok && json.data) {
-        const aiText = typeof json.data === 'string' ? json.data : JSON.stringify(json.data);
-        setResult((r) => ({ ...(r as any), // append ai field
-          ai: aiText } as any));
-      } else if (json?.error) {
-        console.warn('Gemini function error:', json.error);
-        alert('Gemini function error: ' + json.error);
+      const response = await generateWithOpenAI(prompt, context);
+      
+      if (response.ok && response.text) {
+        setResult(prev => prev ? { ...prev, aiResponse: response.text } : null);
+        
+        // Update saved demo with AI response
+        await saveDemoResult({ 
+          prompt, 
+          summary: result.summary, 
+          axes: result.axes, 
+          matchedNodes: result.matchedNodes, 
+          questions: result.questions,
+          aiResponse: response.text,
+        });
+      } else if (response.error) {
+        console.error('AI generation error:', response.error);
+        setResult(prev => prev ? { ...prev, aiResponse: `Error: ${response.error}` } : null);
       }
     } catch (e) {
-      console.warn('Gemini call failed', e);
-      alert('Gemini call failed');
+      console.error('AI generation failed:', e);
+      setResult(prev => prev ? { ...prev, aiResponse: 'Error al generar respuesta.' } : null);
     } finally {
-      setRunning(false);
+      setGeneratingAI(false);
     }
   };
 
@@ -159,8 +167,9 @@ const LabDemo: React.FC = () => {
           <button
             onClick={runDemo}
             disabled={running || prompt.trim().length === 0}
-            className={`px-4 py-2 rounded-lg bg-primary text-primary-foreground font-system text-sm uppercase tracking-wider transition-opacity ${running || prompt.trim().length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+            className={`px-4 py-2 rounded-lg bg-primary text-primary-foreground font-system text-sm uppercase tracking-wider transition-opacity flex items-center gap-2 ${running || prompt.trim().length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
           >
+            {running && <Loader2 className="w-4 h-4 animate-spin" />}
             Ejecutar demo
           </button>
 
@@ -175,7 +184,6 @@ const LabDemo: React.FC = () => {
         <div className="text-xs text-muted-foreground">{prompt.length} caracteres</div>
       </div>
 
-      {/* Results */}
       {result && (
         <div className="mt-6">
           <div className="mb-3 text-sm text-muted-foreground">Resumen</div>
@@ -198,12 +206,37 @@ const LabDemo: React.FC = () => {
                       <span className="text-xs text-muted-foreground">{q.axis}</span>
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1 text-primary">Simulado</span>
+                      <span className="inline-flex items-center gap-1 text-primary">Sugerida</span>
                       <span className="ml-auto text-muted-foreground">#{q.id}</span>
                     </div>
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* AI Response Section */}
+            <div className="mt-4 pt-4 border-t border-border">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-muted-foreground">Respuesta IA (OpenAI)</div>
+                <button
+                  onClick={handleGenerateAI}
+                  disabled={generatingAI}
+                  className={`px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-system flex items-center gap-1.5 transition-opacity ${generatingAI ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/20'}`}
+                >
+                  {generatingAI ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3 h-3" />
+                  )}
+                  {generatingAI ? 'Generando...' : 'Generar con IA'}
+                </button>
+              </div>
+              
+              {result.aiResponse && (
+                <div className="p-3 bg-card border border-border rounded-lg">
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{result.aiResponse}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
