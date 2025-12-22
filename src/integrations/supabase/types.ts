@@ -14,7 +14,210 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      corpus_entries: {
+        Row: {
+          axes: string[] | null
+          content: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          related_nodes: string[] | null
+          slug: string
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          axes?: string[] | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          related_nodes?: string[] | null
+          slug: string
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          axes?: string[] | null
+          content?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          related_nodes?: string[] | null
+          slug?: string
+          status?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      file_uploads: {
+        Row: {
+          created_at: string
+          filename: string
+          id: string
+          mime_type: string
+          original_name: string
+          public_url: string | null
+          size_bytes: number
+          storage_path: string
+          storage_provider: string | null
+        }
+        Insert: {
+          created_at?: string
+          filename: string
+          id?: string
+          mime_type: string
+          original_name: string
+          public_url?: string | null
+          size_bytes: number
+          storage_path: string
+          storage_provider?: string | null
+        }
+        Update: {
+          created_at?: string
+          filename?: string
+          id?: string
+          mime_type?: string
+          original_name?: string
+          public_url?: string | null
+          size_bytes?: number
+          storage_path?: string
+          storage_provider?: string | null
+        }
+        Relationships: []
+      }
+      lab_demos: {
+        Row: {
+          ai_response: string | null
+          axes: string[] | null
+          created_at: string
+          id: string
+          matched_nodes: string[] | null
+          prompt: string
+          questions: Json | null
+          summary: string
+        }
+        Insert: {
+          ai_response?: string | null
+          axes?: string[] | null
+          created_at?: string
+          id?: string
+          matched_nodes?: string[] | null
+          prompt: string
+          questions?: Json | null
+          summary: string
+        }
+        Update: {
+          ai_response?: string | null
+          axes?: string[] | null
+          created_at?: string
+          id?: string
+          matched_nodes?: string[] | null
+          prompt?: string
+          questions?: Json | null
+          summary?: string
+        }
+        Relationships: []
+      }
+      map_nodes: {
+        Row: {
+          axis: string
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+          position_x: number | null
+          position_y: number | null
+        }
+        Insert: {
+          axis: string
+          created_at?: string
+          description?: string | null
+          id: string
+          label: string
+          position_x?: number | null
+          position_y?: number | null
+        }
+        Update: {
+          axis?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+          position_x?: number | null
+          position_y?: number | null
+        }
+        Relationships: []
+      }
+      podcast_episodes: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          description: string | null
+          duration: number | null
+          episode_number: number
+          id: string
+          is_published: boolean | null
+          published_at: string | null
+          title: string
+          transcript_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          episode_number: number
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          title: string
+          transcript_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          episode_number?: number
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          title?: string
+          transcript_key?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      socratic_questions: {
+        Row: {
+          axis: string
+          created_at: string
+          id: string
+          related_nodes: string[] | null
+          text: string
+        }
+        Insert: {
+          axis: string
+          created_at?: string
+          id: string
+          related_nodes?: string[] | null
+          text: string
+        }
+        Update: {
+          axis?: string
+          created_at?: string
+          id?: string
+          related_nodes?: string[] | null
+          text?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
