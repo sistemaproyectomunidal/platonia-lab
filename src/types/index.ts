@@ -4,25 +4,25 @@
  */
 
 // Re-export API types
-export * from './api';
+export * from "./api";
 
 // ============================================
 // ENUMS
 // ============================================
 
 export enum LagrangeAxis {
-  L1_MIEDO = 'L1_miedo',
-  L2_CONTROL = 'L2_control',
-  L3_LEGITIMIDAD = 'L3_legitimidad',
-  L4_SALUD_MENTAL = 'L4_salud_mental',
-  L5_RESPONSABILIDAD = 'L5_responsabilidad',
+  L1_MIEDO = "L1_miedo",
+  L2_CONTROL = "L2_control",
+  L3_LEGITIMIDAD = "L3_legitimidad",
+  L4_SALUD_MENTAL = "L4_salud_mental",
+  L5_RESPONSABILIDAD = "L5_responsabilidad",
 }
 
-export type NodeState = 'active' | 'latent' | 'saturated';
+export type NodeState = "active" | "latent" | "saturated";
 
-export type TensionType = 'reinforcement' | 'opposition' | 'dialectic';
+export type TensionType = "reinforcement" | "opposition" | "dialectic";
 
-export type EpisodeState = 'draft' | 'published';
+export type EpisodeState = "draft" | "published";
 
 // ============================================
 // NODE & EDGE INTERFACES
@@ -108,7 +108,7 @@ export interface CorpusEntry {
   excerpt?: string;
   axes?: string[];
   related_nodes?: string[];
-  status?: 'draft' | 'published';
+  status?: "draft" | "published";
   created_at?: string;
   updated_at?: string;
 }
@@ -117,10 +117,17 @@ export interface CorpusEntry {
 // LAB / ANALYSIS INTERFACES
 // ============================================
 
+export interface ConversationMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+  timestamp?: number;
+}
+
 export interface AnalysisRequest {
   userInput: string;
   context?: string;
   targetAxis?: LagrangeAxis | string;
+  conversationHistory?: ConversationMessage[];
 }
 
 export interface AnalysisResponse {
@@ -179,7 +186,7 @@ export interface FileUpload {
 export interface User {
   id: string;
   email: string;
-  role?: 'admin' | 'user';
+  role?: "admin" | "user";
 }
 
 export interface AuthState {

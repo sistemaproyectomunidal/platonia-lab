@@ -3,10 +3,17 @@
  * Type definitions for API requests and responses
  */
 
+export interface ChatMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+  timestamp?: string;
+}
+
 export interface AIRequest {
   prompt: string;
   context?: string;
   systemPrompt?: string;
+  conversationHistory?: ChatMessage[];
 }
 
 export interface AIResponse {

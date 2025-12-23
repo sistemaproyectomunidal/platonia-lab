@@ -44,6 +44,10 @@ const LabDemo: React.FC = () => {
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [conversationMessages, setConversationMessages] = useState<
+    Array<{ role: "user" | "assistant"; content: string; timestamp: string }>
+  >([]);
+  const [showConversation, setShowConversation] = useState(false);
 
   // Use optimized hooks
   const {
@@ -133,10 +137,15 @@ const LabDemo: React.FC = () => {
         );
       }
 
-      // Run AI analysis
+      // Run AI analysis with conversation history
       const aiResult = await analyzeWithAI({
         userInput: prompt,
         targetAxis: Array.from(matchedAxes)[0],
+        conversationHistory: conversationMessages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+          timestamp: Date.parse(msg.timestamp),
+        })),
       });
 
       // Combine local matched questions with AI-generated questions
@@ -179,6 +188,21 @@ const LabDemo: React.FC = () => {
       };
 
       setResult(resObj);
+
+      // Add messages to conversation history
+      setConversationMessages((prev) => [
+        ...prev,
+        {
+          role: "user" as const,
+          content: prompt,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          role: "assistant" as const,
+          content: aiResult.analysis,
+          timestamp: new Date().toISOString(),
+        },
+      ]);
 
       // Add to history
       addAnalysis(prompt, aiResult);
@@ -361,12 +385,80 @@ const LabDemo: React.FC = () => {
             >
               Limpiar
             </Button>
+
+            {conversationMessages.length > 0 && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowConversation(!showConversation)}
+                  className="gap-2"
+                >
+                  <History className="w-4 h-4" />
+                  Conversación ({conversationMessages.length / 2})
+                  {showConversation ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setConversationMessages([]);
+                    setPrompt("");
+                    setResult(null);
+                  }}
+                  className="text-destructive"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Nueva conversación
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="text-xs text-muted-foreground">
             {prompt.length} caracteres
           </div>
         </div>
+
+        {/* Conversation history panel */}
+        {showConversation && conversationMessages.length > 0 && (
+          <div className="mt-4 p-4 bg-background border border-border rounded-lg max-h-96 overflow-y-auto space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">
+                Historial de Conversación
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {conversationMessages.length / 2} turnos
+              </span>
+            </div>
+            {conversationMessages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`p-3 rounded-lg ${
+                  msg.role === "user" ? "bg-primary/10 ml-8" : "bg-muted mr-8"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-foreground">
+                    {msg.role === "user" ? "Tú" : "Asistente"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(msg.timestamp).toLocaleTimeString("es-ES", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <p className="text-sm text-foreground whitespace-pre-wrap">
+                  {msg.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Results */}

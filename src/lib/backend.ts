@@ -53,12 +53,14 @@ export async function saveDemoResult(payload: {
 export async function generateWithOpenAI(
   prompt: string,
   context?: string,
-  systemPrompt?: string
+  systemPrompt?: string,
+  conversationHistory?: Array<{ role: string; content: string }>
 ) {
   const response = await labService.generateAIResponse({
     prompt,
     context,
     systemPrompt,
+    conversationHistory: conversationHistory as any,
   });
   if (response.error) {
     console.error("OpenAI function error:", response.error);

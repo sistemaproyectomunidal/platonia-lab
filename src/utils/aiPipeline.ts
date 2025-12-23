@@ -51,11 +51,12 @@ export async function analyzeWithAI(
     const timestamp = new Date().toISOString();
     const fullPrompt = `[Timestamp: ${timestamp}]\n\n${userInput}`;
 
-    // Call the OpenAI edge function with dynamic system prompt
+    // Call the OpenAI edge function with dynamic system prompt and conversation history
     const aiResp = await generateWithOpenAI(
       fullPrompt,
       fullContext,
-      systemPrompt
+      systemPrompt,
+      request.conversationHistory
     );
     if (aiResp.error) {
       console.error("AI analysis error:", aiResp.error);

@@ -26,7 +26,8 @@ serve(async (req) => {
       );
     }
 
-    const { prompt, context, systemPrompt } = await req.json();
+    const { prompt, context, systemPrompt, conversationHistory } =
+      await req.json();
 
     if (!prompt) {
       return new Response(JSON.stringify({ error: "Prompt is required" }), {
@@ -73,6 +74,16 @@ Tu análisis debe revelar la complejidad del problema, no simplificarlo.`;
       messages.push({
         role: "system",
         content: `Contexto del mapa conceptual: ${context}`,
+      });
+    }
+
+    // Add conversation history if provided
+    if (conversationHistory && Array.isArray(conversationHistory)) {
+      console.log(`Including ${conversationHistory.length} previous messages`);
+      conversationHistory.forEach((msg: any) => {
+        if (msg.role && msg.content) {
+          messages.push({ role: msg.role, content: msg.content });
+        }
       });
     }
 

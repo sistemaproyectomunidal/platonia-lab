@@ -3,8 +3,8 @@
  * Handles lab demos and analysis operations
  */
 
-import { BaseApiClient, ApiResponse } from './base';
-import type { LabDemo, AIRequest, AIResponse } from '@/types/api';
+import { BaseApiClient, ApiResponse } from "./base";
+import type { LabDemo, AIRequest, AIResponse } from "@/types/api";
 
 export class LabService extends BaseApiClient {
   /**
@@ -19,19 +19,21 @@ export class LabService extends BaseApiClient {
     aiResponse?: string;
   }): Promise<ApiResponse<{ id: string }>> {
     const supabase = this.getSupabaseClient();
-    
+
     return this.handleResponse(
       supabase
-        .from('lab_demos')
-        .insert([{
-          prompt: payload.prompt,
-          summary: payload.summary,
-          axes: payload.axes,
-          matched_nodes: payload.matchedNodes,
-          questions: JSON.stringify(payload.questions),
-          ai_response: payload.aiResponse || null,
-        }])
-        .select('id')
+        .from("lab_demos")
+        .insert([
+          {
+            prompt: payload.prompt,
+            summary: payload.summary,
+            axes: payload.axes,
+            matched_nodes: payload.matchedNodes,
+            questions: JSON.stringify(payload.questions),
+            ai_response: payload.aiResponse || null,
+          },
+        ])
+        .select("id")
         .single()
     );
   }
@@ -42,16 +44,21 @@ export class LabService extends BaseApiClient {
   async fetchDemos(options?: {
     limit?: number;
     offset?: number;
-    orderBy?: 'created_at' | 'updated_at';
+    orderBy?: "created_at" | "updated_at";
     ascending?: boolean;
   }): Promise<ApiResponse<LabDemo[]>> {
     const supabase = this.getSupabaseClient();
-    const { limit = 10, offset = 0, orderBy = 'created_at', ascending = false } = options || {};
+    const {
+      limit = 10,
+      offset = 0,
+      orderBy = "created_at",
+      ascending = false,
+    } = options || {};
 
     return this.handleResponse(
       supabase
-        .from('lab_demos')
-        .select('*')
+        .from("lab_demos")
+        .select("*")
         .order(orderBy, { ascending })
         .range(offset, offset + limit - 1)
     );
@@ -62,13 +69,9 @@ export class LabService extends BaseApiClient {
    */
   async getDemoById(id: string): Promise<ApiResponse<LabDemo>> {
     const supabase = this.getSupabaseClient();
-    
+
     return this.handleResponse(
-      supabase
-        .from('lab_demos')
-        .select('*')
-        .eq('id', id)
-        .single()
+      supabase.from("lab_demos").select("*").eq("id", id).single()
     );
   }
 
@@ -77,23 +80,23 @@ export class LabService extends BaseApiClient {
    */
   async deleteDemo(id: string): Promise<ApiResponse<void>> {
     const supabase = this.getSupabaseClient();
-    
+
     return this.handleResponse(
-      supabase
-        .from('lab_demos')
-        .delete()
-        .eq('id', id)
+      supabase.from("lab_demos").delete().eq("id", id)
     );
   }
 
   /**
    * Generate AI response using OpenAI
    */
-  async generateAIResponse(request: AIRequest): Promise<ApiResponse<AIResponse>> {
-    return this.invokeFunction<AIResponse>('openai-chat', {
+  async generateAIResponse(
+    request: AIRequest
+  ): Promise<ApiResponse<AIResponse>> {
+    return this.invokeFunction<AIResponse>("openai-chat", {
       prompt: request.prompt,
       context: request.context,
       systemPrompt: request.systemPrompt,
+      conversationHistory: request.conversationHistory,
     });
   }
 }
