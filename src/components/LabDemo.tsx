@@ -139,16 +139,39 @@ const LabDemo: React.FC = () => {
         targetAxis: Array.from(matchedAxes)[0],
       });
 
+      // Combine local matched questions with AI-generated questions
+      const allQuestions = [
+        ...matchedQuestions,
+        ...aiResult.generatedQuestions.map((text, idx) => ({
+          id: `ai-${idx}`,
+          text,
+          axis: Array.from(matchedAxes)[0] || "general",
+        })),
+      ];
+
+      // Use AI-related nodes if available, otherwise use local matches
+      const finalNodes =
+        aiResult.relatedNodes.length > 0
+          ? aiResult.relatedNodes
+          : Array.from(matchedNodes);
+
+      // Get axes from related nodes
+      const finalAxes = new Set<string>(Array.from(matchedAxes));
+      finalNodes.forEach((nodeId) => {
+        const node = nodes.find((n) => n.id === nodeId);
+        if (node?.axis) finalAxes.add(node.axis);
+      });
+
       const summary = `Análisis completado: ${
-        matchedQuestions.length
+        allQuestions.length
       } preguntas relevantes sobre los ejes ${
-        Array.from(matchedAxes).join(", ") || "general"
+        Array.from(finalAxes).join(", ") || "general"
       }`;
 
       const resObj: Result = {
-        axes: Array.from(matchedAxes),
-        matchedNodes: Array.from(matchedNodes),
-        questions: matchedQuestions,
+        axes: Array.from(finalAxes),
+        matchedNodes: finalNodes,
+        questions: allQuestions,
         summary,
         aiResponse: aiResult.analysis,
         warnings: aiResult.warnings,
@@ -420,21 +443,34 @@ const LabDemo: React.FC = () => {
               Preguntas Socráticas Sugeridas
             </div>
             <ul className="space-y-3">
-              {result.questions.map((q) => (
-                <li
-                  key={q.id}
-                  className="p-3 bg-background border border-border rounded-lg"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="text-sm text-foreground font-medium">
-                      {q.text}
-                    </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {q.axis}
-                    </span>
-                  </div>
+              {result.questions.length === 0 ? (
+                <li className="p-3 bg-background border border-border rounded-lg text-sm text-muted-foreground italic">
+                  No se generaron preguntas para este análisis
                 </li>
-              ))}
+              ) : (
+                result.questions.map((q) => (
+                  <li
+                    key={q.id}
+                    className="p-3 bg-background border border-border rounded-lg hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="text-sm text-foreground font-medium">
+                        {q.text}
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {q.axis}
+                        </span>
+                        {q.id.startsWith("ai-") && (
+                          <span className="text-xs text-primary/70 whitespace-nowrap">
+                            ✨ AI
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </div>

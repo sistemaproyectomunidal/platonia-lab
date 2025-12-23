@@ -68,11 +68,20 @@ export async function analyzeWithAI(
     // Extract related nodes based on content analysis
     const relatedNodes = await findRelatedNodes(userInput, aiText);
 
-    // Generate follow-up questions
-    const generatedQuestions = await generateSocraticQuestions(
+    // Extract questions from AI response (lines starting with ?)
+    const aiGeneratedQuestions = extractQuestionsFromAIResponse(aiText);
+
+    // Also get database questions related to nodes
+    const dbQuestions = await generateSocraticQuestions(
       userInput,
       relatedNodes
     );
+
+    // Combine AI-generated questions (priority) with DB questions
+    const generatedQuestions = [
+      ...aiGeneratedQuestions,
+      ...dbQuestions.slice(0, Math.max(0, 3 - aiGeneratedQuestions.length)),
+    ];
 
     // Calculate tension level
     const tensionLevel = calculateTensionLevel(userInput, aiText);
@@ -97,6 +106,66 @@ export async function analyzeWithAI(
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
+
+/**
+ * Extract questions from AI response text
+ * Looks for lines that start with question marks or numbered questions
+ */
+function extractQuestionsFromAIResponse(aiText: string): string[] {
+  const questions: string[] = [];
+  const lines = aiText.split("\n");
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    // Match patterns like:
+    // - ¿Question?
+    // - 1. ¿Question?
+    // - PREGUNTAS SOCRÁTICAS: followed by questions
+    // - Lines ending with ?
+
+    if (line.startsWith("¿") || /^\d+\.\s*¿/.test(line) || /-\s*¿/.test(line)) {
+      // Extract the question text
+      let question = line
+        .replace(/^\d+\.\s*/, "") // Remove numbering
+        .replace(/^-\s*/, "") // Remove dash
+        .trim();
+
+      // If it's a valid question (has content and ends with ?)
+      if (question.length > 10 && question.includes("?")) {
+        questions.push(question);
+      }
+    }
+  }
+
+  // Also look for sections labeled as questions
+  const questionSectionMatch =
+    aiText.match(/PREGUNTAS SOCRÁTICAS:?\s*([\s\S]*?)(?=\n\n|$)/i) ||
+    aiText.match(/PREGUNTAS:?\s*([\s\S]*?)(?=\n\n|$)/i);
+
+  if (questionSectionMatch) {
+    const section = questionSectionMatch[1];
+    const sectionQuestions = section
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(
+        (line) =>
+          (line.startsWith("¿") || /^\d+\.\s*¿/.test(line)) &&
+          line.includes("?")
+      )
+      .map((line) =>
+        line
+          .replace(/^\d+\.\s*/, "")
+          .replace(/^-\s*/, "")
+          .trim()
+      );
+
+    questions.push(...sectionQuestions);
+  }
+
+  // Remove duplicates and limit to 3
+  return [...new Set(questions)].slice(0, 3);
+}
 
 /**
  * Build system prompt based on target axis
