@@ -1,0 +1,92 @@
+{
+  "edges": [
+    {
+      "id": "edge_1",
+      "source": "L1_miedo",
+      "target": "L2_control",
+      "label": "El miedo habilita el control",
+      "tension_type": "reinforcement",
+      "weight": 0.9
+    },
+    {
+      "id": "edge_2",
+      "source": "L1_miedo",
+      "target": "L4_silencio",
+      "label": "El miedo produce silencio",
+      "tension_type": "reinforcement",
+      "weight": 0.7
+    },
+    {
+      "id": "edge_3",
+      "source": "L2_control",
+      "target": "L3_legitimidad",
+      "label": "El control busca legitimarse",
+      "tension_type": "dialectic",
+      "weight": 0.8
+    },
+    {
+      "id": "edge_4",
+      "source": "L3_legitimidad",
+      "target": "verdad",
+      "label": "La legitimidad invoca la verdad",
+      "tension_type": "opposition",
+      "weight": 0.75
+    },
+    {
+      "id": "edge_5",
+      "source": "L4_silencio",
+      "target": "verdad",
+      "label": "El silencio oculta la verdad",
+      "tension_type": "opposition",
+      "weight": 0.6
+    },
+    {
+      "id": "edge_6",
+      "source": "L5_automatismo",
+      "target": "L1_miedo",
+      "label": "El automatismo genera miedo",
+      "tension_type": "reinforcement",
+      "weight": 0.5
+    },
+    {
+      "id": "edge_7",
+      "source": "narrativa",
+      "target": "L3_legitimidad",
+      "label": "La narrativa legitima el poder",
+      "tension_type": "reinforcement",
+      "weight": 0.85
+    },
+    {
+      "id": "edge_8",
+      "source": "narrativa",
+      "target": "L1_miedo",
+      "label": "La narrativa alimenta el miedo",
+      "tension_type": "reinforcement",
+      "weight": 0.65
+    },
+    {
+      "id": "edge_9",
+      "source": "tension",
+      "target": "verdad",
+      "label": "La tensión revela la verdad",
+      "tension_type": "dialectic",
+      "weight": 0.8
+    },
+    {
+      "id": "edge_10",
+      "source": "tension",
+      "target": "L4_silencio",
+      "label": "La tensión rompe el silencio",
+      "tension_type": "opposition",
+      "weight": 0.55
+    },
+    {
+      "id": "edge_11",
+      "source": "L5_automatismo",
+      "target": "narrativa",
+      "label": "El automatismo replica narrativas",
+      "tension_type": "reinforcement",
+      "weight": 0.5
+    }
+  ]
+}

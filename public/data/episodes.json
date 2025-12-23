@@ -1,0 +1,44 @@
+{
+  "episodes": [
+    {
+      "id": "ep001",
+      "title": "Crítica Socrática en el Punto Lagrange",
+      "description": "¿Qué pasa cuando colocas a la IA en el punto de equilibrio entre afirmación y duda?",
+      "audio_url": "/audio/episodes/ep001.mp3",
+      "duration": 2062,
+      "transcript": "",
+      "related_nodes": ["L5_automatismo", "tension", "verdad"],
+      "published_date": "2024-01-15T00:00:00Z"
+    },
+    {
+      "id": "ep002",
+      "title": "Miedo al Miedo",
+      "description": "El círculo vicioso del control preventivo y sus efectos en la capacidad crítica.",
+      "audio_url": "/audio/episodes/ep002.mp3",
+      "duration": 2468,
+      "transcript": "",
+      "related_nodes": ["L1_miedo", "L2_control", "L4_silencio"],
+      "published_date": "2024-02-02T00:00:00Z"
+    },
+    {
+      "id": "ep003",
+      "title": "Legitimidad y Silencio",
+      "description": "Cuando callar es consentir y hablar es desobedecer.",
+      "audio_url": "/audio/episodes/ep003.mp3",
+      "duration": 2325,
+      "transcript": "",
+      "related_nodes": ["L3_legitimidad", "L4_silencio", "narrativa"],
+      "published_date": "2024-02-20T00:00:00Z"
+    },
+    {
+      "id": "ep004",
+      "title": "El Oráculo Automatizado",
+      "description": "¿Puede la IA ser socrática o solo simula serlo?",
+      "audio_url": "/audio/episodes/ep004.mp3",
+      "duration": 2712,
+      "transcript": "",
+      "related_nodes": ["L5_automatismo", "verdad", "tension"],
+      "published_date": "2024-03-10T00:00:00Z"
+    }
+  ]
+}
