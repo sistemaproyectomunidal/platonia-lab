@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="hsl(38 70% 50%)" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="hsl(38 70% 50%)" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="hsl(38 70% 50%)" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Edges (semantic: data-edge-source / data-edge-target) -->
+  <g id="edges" stroke-width="4" stroke-linecap="round" fill="none">
+    <line data-edge-source="miedo" data-edge-target="legitimidad" x1="400" y1="200" x2="250" y2="350" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="miedo" data-edge-target="silencio" x1="400" y1="200" x2="550" y2="320" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="legitimidad" data-edge-target="verdad" x1="250" y1="350" x2="400" y2="480" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="silencio" data-edge-target="verdad" x1="550" y1="320" x2="400" y2="480" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="automatismo" data-edge-target="miedo" x1="180" y1="200" x2="400" y2="200" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="critica" data-edge-target="miedo" x1="620" y1="180" x2="400" y2="200" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="narrativa" data-edge-target="legitimidad" x1="300" y1="120" x2="250" y2="350" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="narrativa" data-edge-target="miedo" x1="300" y1="120" x2="400" y2="200" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="tension" data-edge-target="verdad" x1="500" y1="420" x2="400" y2="480" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="tension" data-edge-target="silencio" x1="500" y1="420" x2="550" y2="320" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="critica" data-edge-target="tension" x1="620" y1="180" x2="500" y2="420" stroke="hsl(38 50% 40%)" />
+    <line data-edge-source="automatismo" data-edge-target="narrativa" x1="180" y1="200" x2="300" y2="120" stroke="hsl(38 50% 40%)" />
+  </g>
+
+  <!-- Nodes (semantic: data-node-id) -->
+  <g id="nodes">
+    <g data-node-id="miedo" transform="translate(400,200)">
+      <circle r="28" fill="hsl(38 70% 50%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Miedo</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[control]</text>
+    </g>
+
+    <g data-node-id="legitimidad" transform="translate(250,350)">
+      <circle r="28" fill="hsl(38 70% 50%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Legitimidad</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[poder]</text>
+    </g>
+
+    <g data-node-id="silencio" transform="translate(550,320)">
+      <circle r="28" fill="hsl(220 40% 45%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Silencio</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[resistencia]</text>
+    </g>
+
+    <g data-node-id="verdad" transform="translate(400,480)">
+      <circle r="28" fill="hsl(38 70% 50%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Verdad</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[epistemologia]</text>
+    </g>
+
+    <g data-node-id="automatismo" transform="translate(180,200)">
+      <circle r="28" fill="hsl(220 40% 45%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Automatismo</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[tecnica]</text>
+    </g>
+
+    <g data-node-id="critica" transform="translate(620,180)">
+      <circle r="28" fill="hsl(38 70% 50%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Crítica</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[metodo]</text>
+    </g>
+
+    <g data-node-id="narrativa" transform="translate(300,120)">
+      <circle r="28" fill="hsl(0 50% 45%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Narrativa</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[poder]</text>
+    </g>
+
+    <g data-node-id="tension" transform="translate(500,420)">
+      <circle r="28" fill="hsl(38 70% 50%)" opacity="1" />
+      <circle r="6" fill="#f7f7f7" opacity="0.15" />
+      <text y="40" text-anchor="middle" font-family="Inter, system-ui" font-size="12">Tensión</text>
+      <text y="55" text-anchor="middle" font-family="Inter, system-ui" font-size="9" fill="rgba(0,0,0,0.45)">[dialectica]</text>
+    </g>
+  </g>
+</svg>

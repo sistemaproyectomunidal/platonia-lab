@@ -1,0 +1,84 @@
+{
+  "nodes": [
+    {
+      "id": "L1_miedo",
+      "label": "El Miedo al Miedo",
+      "axis": "L1_miedo",
+      "corpus_source": "miedo_al_miedo.me",
+      "coordinates": { "x": 400, "y": 200 },
+      "color": "#ff4444",
+      "tension_level": 9,
+      "description": "La parálisis no nace del peligro, sino del miedo al miedo mismo"
+    },
+    {
+      "id": "L2_control",
+      "label": "Mecanismos de Control",
+      "axis": "L2_control",
+      "corpus_source": "control_social.me",
+      "coordinates": { "x": 250, "y": 350 },
+      "color": "#ff8844",
+      "tension_level": 8,
+      "description": "El control como mecanismo de gestión del miedo colectivo"
+    },
+    {
+      "id": "L3_legitimidad",
+      "label": "Legitimidad Narrativa",
+      "axis": "L3_legitimidad",
+      "corpus_source": "legitimidad_narrativa.me",
+      "coordinates": { "x": 550, "y": 320 },
+      "color": "#44aaff",
+      "tension_level": 7,
+      "description": "La construcción narrativa del poder legítimo y sus contradicciones"
+    },
+    {
+      "id": "L4_silencio",
+      "label": "El Silencio Resistente",
+      "axis": "L4_salud_mental",
+      "corpus_source": "silencio_resistencia.me",
+      "coordinates": { "x": 400, "y": 480 },
+      "color": "#44ff88",
+      "tension_level": 6,
+      "description": "El silencio como forma de resistencia y como complicidad"
+    },
+    {
+      "id": "L5_automatismo",
+      "label": "Automatismo Crítico",
+      "axis": "L5_responsabilidad",
+      "corpus_source": "automatismo_critica.me",
+      "coordinates": { "x": 180, "y": 200 },
+      "color": "#aa44ff",
+      "tension_level": 8,
+      "description": "La delegación del pensamiento en sistemas automáticos"
+    },
+    {
+      "id": "verdad",
+      "label": "Verdad Dialéctica",
+      "axis": "epistemologia",
+      "corpus_source": "verdad_dialectica.me",
+      "coordinates": { "x": 620, "y": 180 },
+      "color": "#ffaa44",
+      "tension_level": 9,
+      "description": "La verdad como construcción dialéctica, no como revelación"
+    },
+    {
+      "id": "narrativa",
+      "label": "Control Narrativo",
+      "axis": "poder",
+      "corpus_source": "control_narrativo.me",
+      "coordinates": { "x": 300, "y": 120 },
+      "color": "#ff44aa",
+      "tension_level": 8,
+      "description": "El control de la historia como control del presente"
+    },
+    {
+      "id": "tension",
+      "label": "Tensión Productiva",
+      "axis": "dialectica",
+      "corpus_source": "tension_productiva.me",
+      "coordinates": { "x": 500, "y": 420 },
+      "color": "#44ffaa",
+      "tension_level": 10,
+      "description": "La productividad del conflicto no resuelto"
+    }
+  ]
+}

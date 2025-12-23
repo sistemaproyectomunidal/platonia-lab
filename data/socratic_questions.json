@@ -1,0 +1,60 @@
+{
+  "questions": [
+    {
+      "id": "sq1",
+      "question": "¿Por qué asumes que el consenso implica verdad?",
+      "related_axis": "L3_legitimidad",
+      "tension_level": 8,
+      "context": "Cuando las masas aceptan una narrativa como verdadera"
+    },
+    {
+      "id": "sq2",
+      "question": "Si el miedo te protege, ¿de qué te priva?",
+      "related_axis": "L1_miedo",
+      "tension_level": 9,
+      "context": "Cuando el miedo se presenta como precaución razonable"
+    },
+    {
+      "id": "sq3",
+      "question": "¿Quién decide qué silencio es prudencia y cuál es cobardía?",
+      "related_axis": "L4_salud_mental",
+      "tension_level": 7,
+      "context": "Cuando callar se justifica como estrategia"
+    },
+    {
+      "id": "sq4",
+      "question": "¿Puede una máquina formular la pregunta que no quieres escuchar?",
+      "related_axis": "L5_responsabilidad",
+      "tension_level": 8,
+      "context": "Cuando delegamos el pensamiento crítico a la IA"
+    },
+    {
+      "id": "sq5",
+      "question": "Si delegas el pensamiento, ¿sigues siendo responsable de sus conclusiones?",
+      "related_axis": "L5_responsabilidad",
+      "tension_level": 9,
+      "context": "Cuando la IA toma decisiones por nosotros"
+    },
+    {
+      "id": "sq6",
+      "question": "¿La narrativa dominante es dominante porque es verdadera, o verdadera porque es dominante?",
+      "related_axis": "L3_legitimidad",
+      "tension_level": 10,
+      "context": "Cuando el poder define la verdad"
+    },
+    {
+      "id": "sq7",
+      "question": "¿Qué certeza necesitarías para cuestionar lo que das por cierto?",
+      "related_axis": "L1_miedo",
+      "tension_level": 8,
+      "context": "Cuando las creencias se vuelven dogma"
+    },
+    {
+      "id": "sq8",
+      "question": "¿El control que ejerces sobre ti mismo es tuyo o te fue implantado?",
+      "related_axis": "L2_control",
+      "tension_level": 9,
+      "context": "Cuando la autodisciplina es control interiorizado"
+    }
+  ]
+}
