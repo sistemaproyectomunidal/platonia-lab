@@ -167,9 +167,13 @@ export async function podcastServiceExample() {
     episodes.data
       .slice(0, 3)
       .forEach(
-        (ep: { episode_number: number; title: string; duration: number }) => {
-          console.log(`  Ep ${ep.episode_number}: ${ep.title}`);
-          console.log(`     Duration: ${ep.duration} seconds`);
+        (ep: {
+          episode_number?: number;
+          title: string;
+          duration: number | string;
+        }) => {
+          console.log(`  Ep ${ep.episode_number || "N/A"}: ${ep.title}`);
+          console.log(`     Duration: ${ep.duration}`);
         }
       );
   }
@@ -179,7 +183,11 @@ export async function podcastServiceExample() {
     const firstEpisode = await podcastService.getEpisodeByNumber(1);
     if (firstEpisode.data) {
       console.log(`\nFirst episode: ${firstEpisode.data.title}`);
-      console.log(`Published: ${firstEpisode.data.published_at}`);
+      console.log(
+        `Published: ${
+          firstEpisode.data.published_date || firstEpisode.data.date || "N/A"
+        }`
+      );
     }
   }
 
