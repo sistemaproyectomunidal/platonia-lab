@@ -17,7 +17,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   useEffect(() => {
     setHistory((h) => (h[h.length - 1] === location.pathname ? h : [...h, location.pathname]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [location.pathname]);
 
   const go = (to: string, opts?: { replace?: boolean }) => navigate(to, { replace: !!opts?.replace });
