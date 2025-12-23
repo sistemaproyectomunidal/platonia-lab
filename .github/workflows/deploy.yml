@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -27,6 +28,11 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          # Las variables VITE_ se leen desde .env en el repositorio
+          # pero puedes sobrescribirlas aquí si necesitas diferentes valores para producción
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
 
       - name: Ensure 404 page for SPA
@@ -34,20 +40,11 @@ jobs:
           set -e
           if [ -d dist ]; then cp -f dist/index.html dist/404.html || true; fi
 
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./dist
-
-  deploy:
-    needs: build_and_deploy
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 name: Deploy to GitHub Pages
 
 on:
