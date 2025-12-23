@@ -1,44 +1,41 @@
-// @ts-nocheck
 /**
  * Example: Using Map Service and Hooks
  */
 
-import React, { useState } from 'react';
-import { 
-  useMapNodes, 
+import React, { useState } from "react";
+import {
+  useMapNodes,
   useMapNodesByAxis,
   useCreateNode,
   useUpdateNodePosition,
-  useDeleteNode 
-} from '@/hooks/queries';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import type { Node } from '@/types';
+  useDeleteNode,
+} from "@/hooks/queries";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import type { Node } from "@/types";
 
 export function MapExample() {
-  const [selectedAxis, setSelectedAxis] = useState<string>('L1_miedo');
+  const [selectedAxis, setSelectedAxis] = useState<string>("L1_miedo");
 
   // Query - fetch all nodes
-  const { 
-    data: allNodes, 
+  const {
+    data: allNodes,
     isLoading: loadingAll,
-    error: errorAll 
+    error: errorAll,
   } = useMapNodes();
 
   // Query - fetch nodes by axis
-  const { 
-    data: axisNodes, 
-    isLoading: loadingAxis 
-  } = useMapNodesByAxis(selectedAxis);
+  const { data: axisNodes, isLoading: loadingAxis } =
+    useMapNodesByAxis(selectedAxis);
 
   // Mutation - create node
   const createMutation = useCreateNode({
     onSuccess: () => {
-      toast.success('Nodo creado');
+      toast.success("Nodo creado");
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
-    }
+    },
   });
 
   // Mutation - update position
@@ -50,9 +47,9 @@ export function MapExample() {
   const handleCreateNode = () => {
     const newNode = {
       id: `node_${Date.now()}`,
-      label: 'Nuevo Nodo',
+      label: "Nuevo Nodo",
       axis: selectedAxis,
-      description: 'Descripción del nodo',
+      description: "Descripción del nodo",
       position_x: Math.random() * 500,
       position_y: Math.random() * 500,
     };
@@ -68,18 +65,18 @@ export function MapExample() {
       { id: node.id, x: newX, y: newY },
       {
         onSuccess: () => {
-          toast.success('Posición actualizada');
-        }
+          toast.success("Posición actualizada");
+        },
       }
     );
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('¿Eliminar este nodo?')) {
+    if (confirm("¿Eliminar este nodo?")) {
       deleteMutation.mutate(id, {
         onSuccess: () => {
-          toast.success('Nodo eliminado');
-        }
+          toast.success("Nodo eliminado");
+        },
       });
     }
   };
@@ -92,13 +89,19 @@ export function MapExample() {
     return <div className="p-4 text-red-600">Error: {errorAll.message}</div>;
   }
 
-  const axes = ['L1_miedo', 'L2_control', 'L3_legitimidad', 'L4_salud_mental', 'L5_responsabilidad'];
+  const axes = [
+    "L1_miedo",
+    "L2_control",
+    "L3_legitimidad",
+    "L4_salud_mental",
+    "L5_responsabilidad",
+  ];
 
   return (
     <div className="p-6 space-y-6">
       <div className="space-y-4">
         <h2 className="text-2xl font-bold">Mapa de Nodos</h2>
-        
+
         {/* Axis Selector */}
         <div className="flex gap-2">
           <select
@@ -112,8 +115,11 @@ export function MapExample() {
               </option>
             ))}
           </select>
-          <Button onClick={handleCreateNode} disabled={createMutation.isPending}>
-            {createMutation.isPending ? 'Creando...' : 'Crear Nodo'}
+          <Button
+            onClick={handleCreateNode}
+            disabled={createMutation.isPending}
+          >
+            {createMutation.isPending ? "Creando..." : "Crear Nodo"}
           </Button>
         </div>
 
@@ -137,14 +143,14 @@ export function MapExample() {
       {/* Nodes by Axis */}
       <div className="space-y-4">
         <h3 className="text-xl font-semibold">
-          Nodos en {selectedAxis} {loadingAxis && '(cargando...)'}
+          Nodos en {selectedAxis} {loadingAxis && "(cargando...)"}
         </h3>
-        
+
         {axisNodes && axisNodes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {axisNodes.map((node) => (
-              <div 
-                key={node.id} 
+              <div
+                key={node.id}
                 className="p-4 border rounded hover:border-blue-500 transition-colors"
               >
                 <div className="flex justify-between items-start mb-2">
@@ -158,14 +164,15 @@ export function MapExample() {
                     ×
                   </Button>
                 </div>
-                
+
                 <p className="text-sm text-gray-600 mb-2">
-                  {node.description || 'Sin descripción'}
+                  {node.description || "Sin descripción"}
                 </p>
-                
+
                 <div className="flex justify-between items-center text-xs text-gray-500">
                   <span>
-                    Posición: ({node.position_x?.toFixed(0) || 0}, {node.position_y?.toFixed(0) || 0})
+                    Posición: ({node.position_x?.toFixed(0) || 0},{" "}
+                    {node.position_y?.toFixed(0) || 0})
                   </span>
                   <Button
                     onClick={() => handleUpdatePosition(node)}
@@ -194,12 +201,16 @@ export function MapExample() {
               <div key={axis} className="flex items-center gap-2">
                 <span className="w-40 text-sm">{axis}</span>
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-500 h-2 rounded-full transition-all"
-                    style={{ width: `${(count / (allNodes?.length || 1)) * 100}%` }}
+                    style={{
+                      width: `${(count / (allNodes?.length || 1)) * 100}%`,
+                    }}
                   />
                 </div>
-                <span className="w-10 text-right text-sm font-medium">{count}</span>
+                <span className="w-10 text-right text-sm font-medium">
+                  {count}
+                </span>
               </div>
             );
           })}

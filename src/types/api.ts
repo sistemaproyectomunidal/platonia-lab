@@ -34,7 +34,7 @@ export interface FileUploadResult {
     filename: string;
     publicUrl: string;
     storagePath: string;
-    provider: 'gcs' | 'local';
+    provider: "gcs" | "local";
   };
   error?: string;
 }
@@ -45,7 +45,7 @@ export interface LabDemo {
   summary: string;
   axes: string[] | null;
   matched_nodes: string[] | null;
-  questions: any;
+  questions: unknown;
   ai_response: string | null;
   created_at: string;
 }
@@ -55,7 +55,7 @@ export interface DemoSaveRequest {
   summary: string;
   axes: string[];
   matchedNodes: string[];
-  questions: any[];
+  questions: unknown[];
   aiResponse?: string;
 }
 
@@ -69,5 +69,5 @@ export interface PaginationOptions {
 export interface SearchOptions {
   query: string;
   limit?: number;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }

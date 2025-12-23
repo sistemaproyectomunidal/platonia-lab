@@ -1,13 +1,12 @@
-// @ts-nocheck
 /**
  * FileUploader Component - Migrated to New Architecture
  * This is an example of how to migrate an existing component to use the new hooks
  */
 
-import React, { useCallback, useState } from 'react';
-import { useFileUpload } from '@/hooks/queries';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import React, { useCallback, useState } from "react";
+import { useFileUpload } from "@/hooks/queries";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function FileUploaderNew() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -17,7 +16,7 @@ export function FileUploaderNew() {
     onSuccess: (response) => {
       if (response.data) {
         toast.success(`Archivo subido: ${response.data.filename}`);
-        console.log('Upload result:', response.data);
+        console.log("Upload result:", response.data);
         setSelectedFile(null);
       }
     },
@@ -26,16 +25,19 @@ export function FileUploaderNew() {
     },
   });
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  }, []);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setSelectedFile(file);
+      }
+    },
+    []
+  );
 
   const handleUpload = useCallback(() => {
     if (!selectedFile) {
-      toast.error('Selecciona un archivo primero');
+      toast.error("Selecciona un archivo primero");
       return;
     }
 
@@ -45,7 +47,7 @@ export function FileUploaderNew() {
   return (
     <div className="space-y-4 p-4 border rounded-lg">
       <h3 className="text-lg font-semibold">Subir Archivo</h3>
-      
+
       <div className="flex items-center gap-4">
         <input
           type="file"
@@ -53,25 +55,24 @@ export function FileUploaderNew() {
           disabled={uploadMutation.isPending}
           className="flex-1"
         />
-        
+
         <Button
           onClick={handleUpload}
           disabled={!selectedFile || uploadMutation.isPending}
         >
-          {uploadMutation.isPending ? 'Subiendo...' : 'Subir'}
+          {uploadMutation.isPending ? "Subiendo..." : "Subir"}
         </Button>
       </div>
 
       {selectedFile && (
         <div className="text-sm text-gray-600">
-          Archivo seleccionado: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
+          Archivo seleccionado: {selectedFile.name} (
+          {(selectedFile.size / 1024).toFixed(2)} KB)
         </div>
       )}
 
       {uploadMutation.isPending && (
-        <div className="text-sm text-blue-600">
-          Subiendo archivo...
-        </div>
+        <div className="text-sm text-blue-600">Subiendo archivo...</div>
       )}
 
       {uploadMutation.isError && (
@@ -82,12 +83,14 @@ export function FileUploaderNew() {
 
       {uploadMutation.isSuccess && uploadMutation.data.data && (
         <div className="p-3 bg-green-50 border border-green-200 rounded text-sm">
-          <p className="font-medium text-green-800">¡Archivo subido exitosamente!</p>
+          <p className="font-medium text-green-800">
+            ¡Archivo subido exitosamente!
+          </p>
           <p className="text-green-700 mt-1">
             ID: {uploadMutation.data.data.id}
           </p>
           {uploadMutation.data.data.public_url && (
-            <a 
+            <a
               href={uploadMutation.data.data.public_url}
               target="_blank"
               rel="noopener noreferrer"
@@ -104,11 +107,11 @@ export function FileUploaderNew() {
 
 /**
  * Comparison: Old vs New Implementation
- * 
+ *
  * OLD (using useBackend):
  * ```typescript
  * import { useFileUpload } from '@/hooks/useBackend';
- * 
+ *
  * const mutation = useFileUpload({
  *   onSuccess: (result) => {
  *     if (result.ok && result.upload) {
@@ -116,14 +119,14 @@ export function FileUploaderNew() {
  *     }
  *   }
  * });
- * 
+ *
  * mutation.mutate(file);
  * ```
- * 
+ *
  * NEW (using queries):
  * ```typescript
  * import { useFileUpload } from '@/hooks/queries';
- * 
+ *
  * const uploadMutation = useFileUpload({
  *   onSuccess: (response) => {
  *     if (response.data) {
@@ -134,7 +137,7 @@ export function FileUploaderNew() {
  *     // automatic error handling
  *   }
  * });
- * 
+ *
  * uploadMutation.mutate(file);
  * // Benefits:
  * // - Better TypeScript support
