@@ -1,3 +1,43 @@
+# Platonia Lab - Sistema Lagrange
+
+Plataforma de análisis filosófico conceptual con arquitectura fullstack moderna.
+
+## 🎉 Refactorización v2.0.0 Completada
+
+**La aplicación ha sido completamente refactorizada con una arquitectura escalable y mantenible.**
+
+### ✨ Nuevas Características:
+- ✅ **6 Servicios API modulares** organizados por dominio
+- ✅ **40+ React Query hooks** con caching automático
+- ✅ **TypeScript completo** con type safety end-to-end
+- ✅ **Backward compatible** - código antiguo sigue funcionando
+- ✅ **Documentación exhaustiva** con guías y ejemplos
+
+### 📚 Documentación Nueva:
+- 🚀 **[STATUS.md](STATUS.md)** - Estado y quick start
+- 📖 **[REFACTORING_GUIDE.md](REFACTORING_GUIDE.md)** - Guía completa
+- 🏗️ **[ARCHITECTURE.md](ARCHITECTURE.md)** - Diagramas
+- 🔧 **[HOW_TO_FIX_TYPESCRIPT.md](HOW_TO_FIX_TYPESCRIPT.md)** - Solución de errores
+
+### 🎯 Uso Inmediato:
+
+```typescript
+// Nuevo: Con hooks optimizados
+import { useLabDemos } from '@/hooks/queries';
+
+function MyComponent() {
+  const { data, isLoading } = useLabDemos({ limit: 10 });
+  // ✅ Caching automático, loading states, error handling
+}
+
+// Nuevo: Con servicios (para utils/scripts)
+import { labService } from '@/services/api';
+
+const response = await labService.fetchDemos({ limit: 10 });
+```
+
+---
+
 # Welcome to your Lovable project
 
 ## Project info

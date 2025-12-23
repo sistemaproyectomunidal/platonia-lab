@@ -1,0 +1,73 @@
+/**
+ * API Types
+ * Type definitions for API requests and responses
+ */
+
+export interface AIRequest {
+  prompt: string;
+  context?: string;
+  systemPrompt?: string;
+}
+
+export interface AIResponse {
+  ok?: boolean;
+  text?: string;
+  error?: string;
+}
+
+export interface FileUpload {
+  id: string;
+  filename: string;
+  original_name: string;
+  mime_type: string;
+  size_bytes: number;
+  storage_path: string;
+  public_url: string | null;
+  storage_provider: string | null;
+  created_at: string;
+}
+
+export interface FileUploadResult {
+  ok?: boolean;
+  upload?: {
+    id: string;
+    filename: string;
+    publicUrl: string;
+    storagePath: string;
+    provider: 'gcs' | 'local';
+  };
+  error?: string;
+}
+
+export interface LabDemo {
+  id: string;
+  prompt: string;
+  summary: string;
+  axes: string[] | null;
+  matched_nodes: string[] | null;
+  questions: any;
+  ai_response: string | null;
+  created_at: string;
+}
+
+export interface DemoSaveRequest {
+  prompt: string;
+  summary: string;
+  axes: string[];
+  matchedNodes: string[];
+  questions: any[];
+  aiResponse?: string;
+}
+
+export interface PaginationOptions {
+  limit?: number;
+  offset?: number;
+  orderBy?: string;
+  ascending?: boolean;
+}
+
+export interface SearchOptions {
+  query: string;
+  limit?: number;
+  filters?: Record<string, any>;
+}

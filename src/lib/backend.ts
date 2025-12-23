@@ -1,30 +1,29 @@
-import { supabase } from '@/integrations/supabase/client';
+/**
+ * @deprecated This file is deprecated. Use @/services/api instead.
+ * This file is kept for backward compatibility only.
+ * 
+ * Migration guide:
+ * - Use labService.saveDemoResult() instead of saveDemoResult()
+ * - Use labService.generateAIResponse() instead of generateWithOpenAI()
+ * - Use fileService.uploadFile() instead of uploadFile()
+ * - Use specific service methods from @/services/api for other operations
+ * 
+ * New hooks available in @/hooks/queries:
+ * - useSaveDemoResult, useGenerateAI, useFileUpload, etc.
+ */
+
+import { labService, fileService, corpusService, mapService, podcastService, socraticService } from '@/services/api';
+
+// Re-export types for backward compatibility
+export type { AIResponse, FileUploadResult } from '@/types/api';
 
 export type DemoSaveResult = {
   id?: string | number;
   error?: string;
 };
 
-export type AIResponse = {
-  ok?: boolean;
-  text?: string;
-  error?: string;
-};
-
-export type FileUploadResult = {
-  ok?: boolean;
-  upload?: {
-    id: string;
-    filename: string;
-    publicUrl: string;
-    storagePath: string;
-    provider: 'gcs' | 'local';
-  };
-  error?: string;
-};
-
 /**
- * Save a demo result to the lab_demos table
+ * @deprecated Use labService.saveDemoResult() or useSaveDemoResult() hook instead
  */
 export async function saveDemoResult(payload: { 
   prompt: string; 
@@ -34,167 +33,75 @@ export async function saveDemoResult(payload: {
   questions: any[];
   aiResponse?: string;
 }): Promise<DemoSaveResult> {
-  try {
-    const { data, error } = await supabase
-      .from('lab_demos')
-      .insert([{ 
-        prompt: payload.prompt, 
-        summary: payload.summary, 
-        axes: payload.axes, 
-        matched_nodes: payload.matchedNodes, 
-        questions: JSON.stringify(payload.questions),
-        ai_response: payload.aiResponse || null,
-      }])
-      .select('id')
-      .limit(1)
-      .single();
-
-    if (error) return { error: error.message };
-    return { id: data?.id };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
+  const response = await labService.saveDemoResult(payload);
+  if (response.error) {
+    return { error: response.error };
   }
+  return { id: response.data?.id };
 }
 
 /**
- * Call the OpenAI chat edge function
+ * @deprecated Use labService.generateAIResponse() or useGenerateAI() hook instead
  */
-export async function generateWithOpenAI(prompt: string, context?: string): Promise<AIResponse> {
-  try {
-    const { data, error } = await supabase.functions.invoke('openai-chat', {
-      body: { prompt, context },
-    });
-
-    if (error) {
-      console.error('OpenAI function error:', error);
-      return { error: error.message };
-    }
-
-    return data as AIResponse;
-  } catch (e: any) {
-    console.error('OpenAI call failed:', e);
-    return { error: e?.message || String(e) };
+export async function generateWithOpenAI(prompt: string, context?: string) {
+  const response = await labService.generateAIResponse({ prompt, context });
+  if (response.error) {
+    console.error('OpenAI function error:', response.error);
   }
+  return response.data || { error: response.error };
 }
 
 /**
- * Upload a file via the file-upload edge function
+ * @deprecated Use fileService.uploadFile() or useFileUpload() hook instead
  */
-export async function uploadFile(file: File): Promise<FileUploadResult> {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/file-upload`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: formData,
-      }
-    );
-
-    const data = await response.json();
-    
-    if (!response.ok) {
-      return { error: data.error || 'Upload failed' };
-    }
-
-    return data as FileUploadResult;
-  } catch (e: any) {
-    console.error('File upload failed:', e);
-    return { error: e?.message || String(e) };
-  }
+export async function uploadFile(file: File) {
+  const response = await fileService.uploadFile(file);
+  return response.data || { error: response.error };
 }
 
 /**
- * Fetch lab demos from database
+ * @deprecated Use labService.fetchDemos() or useLabDemos() hook instead
  */
 export async function fetchLabDemos(limit = 10) {
-  try {
-    const { data, error } = await supabase
-      .from('lab_demos')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (error) return { error: error.message };
-    return { data };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
-  }
+  const response = await labService.fetchDemos({ limit });
+  return { data: response.data, error: response.error };
 }
 
 /**
- * Fetch corpus entries
+ * @deprecated Use corpusService.fetchEntries() or useCorpusEntries() hook instead
  */
 export async function fetchCorpusEntries() {
-  try {
-    const { data, error } = await supabase
-      .from('corpus_entries')
-      .select('*')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false });
-
-    if (error) return { error: error.message };
-    return { data };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
-  }
+  const response = await corpusService.fetchEntries();
+  return { data: response.data, error: response.error };
 }
 
 /**
- * Fetch map nodes from database
+ * @deprecated Use mapService.fetchNodes() or useMapNodes() hook instead
  */
 export async function fetchMapNodes() {
-  try {
-    const { data, error } = await supabase
-      .from('map_nodes')
-      .select('*');
-
-    if (error) return { error: error.message };
-    return { data };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
-  }
+  const response = await mapService.fetchNodes();
+  return { data: response.data, error: response.error };
 }
 
 /**
- * Fetch socratic questions
+ * @deprecated Use socraticService.fetchQuestions() or useSocraticQuestions() hook instead
  */
 export async function fetchSocraticQuestions() {
-  try {
-    const { data, error } = await supabase
-      .from('socratic_questions')
-      .select('*');
-
-    if (error) return { error: error.message };
-    return { data };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
-  }
+  const response = await socraticService.fetchQuestions();
+  return { data: response.data, error: response.error };
 }
 
 /**
- * Fetch podcast episodes
+ * @deprecated Use podcastService.fetchEpisodes() or usePodcastEpisodes() hook instead
  */
 export async function fetchPodcastEpisodes() {
-  try {
-    const { data, error } = await supabase
-      .from('podcast_episodes')
-      .select('*')
-      .eq('is_published', true)
-      .order('episode_number', { ascending: true });
-
-    if (error) return { error: error.message };
-    return { data };
-  } catch (e: any) {
-    return { error: e?.message || String(e) };
-  }
+  const response = await podcastService.fetchEpisodes();
+  return { data: response.data, error: response.error };
 }
 
+/**
+ * @deprecated Default export. Use individual services from @/services/api instead
+ */
 export default { 
   saveDemoResult, 
   generateWithOpenAI, 

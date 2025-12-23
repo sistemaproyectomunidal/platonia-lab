@@ -3,6 +3,9 @@
  * Comprehensive type definitions for the entire application
  */
 
+// Re-export API types
+export * from './api';
+
 // ============================================
 // ENUMS
 // ============================================
