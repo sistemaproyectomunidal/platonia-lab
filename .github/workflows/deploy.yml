@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean previous build
+        run: rm -rf dist
+
       - name: Build
         env:
           # Las variables VITE_ se leen desde .env en el repositorio
