@@ -1,21 +1,28 @@
 /**
  * @deprecated This file is deprecated. Use @/services/api instead.
  * This file is kept for backward compatibility only.
- * 
+ *
  * Migration guide:
  * - Use labService.saveDemoResult() instead of saveDemoResult()
  * - Use labService.generateAIResponse() instead of generateWithOpenAI()
  * - Use fileService.uploadFile() instead of uploadFile()
  * - Use specific service methods from @/services/api for other operations
- * 
+ *
  * New hooks available in @/hooks/queries:
  * - useSaveDemoResult, useGenerateAI, useFileUpload, etc.
  */
 
-import { labService, fileService, corpusService, mapService, podcastService, socraticService } from '@/services/api';
+import {
+  labService,
+  fileService,
+  corpusService,
+  mapService,
+  podcastService,
+  socraticService,
+} from "@/services/api";
 
 // Re-export types for backward compatibility
-export type { AIResponse, FileUploadResult } from '@/types/api';
+export type { AIResponse, FileUploadResult } from "@/types/api";
 
 export type DemoSaveResult = {
   id?: string | number;
@@ -25,11 +32,11 @@ export type DemoSaveResult = {
 /**
  * @deprecated Use labService.saveDemoResult() or useSaveDemoResult() hook instead
  */
-export async function saveDemoResult(payload: { 
-  prompt: string; 
-  summary: string; 
-  axes: string[]; 
-  matchedNodes: string[]; 
+export async function saveDemoResult(payload: {
+  prompt: string;
+  summary: string;
+  axes: string[];
+  matchedNodes: string[];
   questions: any[];
   aiResponse?: string;
 }): Promise<DemoSaveResult> {
@@ -43,10 +50,18 @@ export async function saveDemoResult(payload: {
 /**
  * @deprecated Use labService.generateAIResponse() or useGenerateAI() hook instead
  */
-export async function generateWithOpenAI(prompt: string, context?: string, systemPrompt?: string) {
-  const response = await labService.generateAIResponse({ prompt, context, systemPrompt });
+export async function generateWithOpenAI(
+  prompt: string,
+  context?: string,
+  systemPrompt?: string
+) {
+  const response = await labService.generateAIResponse({
+    prompt,
+    context,
+    systemPrompt,
+  });
   if (response.error) {
-    console.error('OpenAI function error:', response.error);
+    console.error("OpenAI function error:", response.error);
   }
   return response.data || { error: response.error };
 }
@@ -102,9 +117,9 @@ export async function fetchPodcastEpisodes() {
 /**
  * @deprecated Default export. Use individual services from @/services/api instead
  */
-export default { 
-  saveDemoResult, 
-  generateWithOpenAI, 
+export default {
+  saveDemoResult,
+  generateWithOpenAI,
   uploadFile,
   fetchLabDemos,
   fetchCorpusEntries,
